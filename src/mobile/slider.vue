@@ -6,62 +6,72 @@
     <div :class="`indicators indi-${ indicators }`" @click.stop v-if="indicators">
       <span :key="i" :class="{ 'slider-indicator-active': nowItemIndex === i - 1 }" @click="indicatorHandle(i - 1)" v-for="i in childrenLength" class="slider-indicator-icon"></span>
     </div>
+    <button @click.stop="prev" v-if="controlBtn" class="btn btn-left">
+      <i class="slider-icon slider-icon-left"></i>
+    </button>
+    <button @click.stop="next" v-if="controlBtn" class="btn btn-right">
+      <i class="slider-icon slider-icon-right"></i>
+    </button>
   </div>
 </template>
 
 <script>
-  import AlloyFinger from 'alloyfinger'
-  import { throttle, debounce } from '../utils'
+import AlloyFinger from 'alloyfinger'
+import { throttle, debounce } from '../utils'
 
-  export default {
-    data () {
-      return {
-        children: [],
-        nowItemIndex: 0,
-        timer: 0,
-        af: null,
-      }
-    },
+export default {
+  data () {
+    return {
+      children: [],
+      nowItemIndex: 0,
+      timer: 0,
+      af: null,
+    }
+  },
 
-    props: {
-      width: {
-        type: String,
-        default: 'auto'
-      },
-      height: {
-        type: String,
-        default: '300px'
-      },
-      interval: {
-        type: Number,
-        default: 3000
-      },
-      speed: {
-        type: Number,
-        default: 500
-      },
-      auto: {
-        type: Boolean,
-        default: true
-      },
-      indicators: {
-        default: 'center'
-      },
-      animation: {
-        type: String,
-        default: 'normal'
-      },
-      initIndex: {
-        type: Number,
-        default: 0,
-      },
+  props: {
+    width: {
+      type: String,
+      default: 'auto'
     },
+    height: {
+      type: String,
+      default: '300px'
+    },
+    interval: {
+      type: Number,
+      default: 3000
+    },
+    speed: {
+      type: Number,
+      default: 500
+    },
+    auto: {
+      type: Boolean,
+      default: true
+    },
+    indicators: {
+      default: 'center'
+    },
+    animation: {
+      type: String,
+      default: 'normal'
+    },
+    initIndex: {
+      type: Number,
+      default: 0,
+    },
+    controlBtn: {
+      type: Boolean,
+      default: true
+    },
+  },
 
-    computed: {
-      childrenLength () {
-        return this.children.length
-      },
+  computed: {
+    childrenLength () {
+      return this.children.length
     },
+  },
 
     methods: {
       updateItems () {
@@ -172,7 +182,16 @@
 <style lang="less" scoped>
   .slider {
     position: relative;
-    overflow: hidden;
+    overflow: unset;
+
+    &:hover {
+      .btn-left {
+        background: none;
+      }
+      .btn-right {
+        background: none;
+      }
+    }
   }
 
   .items {
@@ -181,9 +200,55 @@
     width: 100%;
   }
 
+  .btn {
+    position: absolute;
+    top: 0;
+    z-index: 999;
+
+    height: 100%;
+    width: 50px;
+    border: none;
+
+    background: rgba(0, 0, 0, .1);
+    outline: none;
+    transition: background .3s;
+    cursor: pointer;
+  }
+
+  .btn-left {
+    left: -50px;
+    background: none;
+  }
+
+  .btn-right {
+    right: -50px;
+    background: none;
+  }
+  .slider-icon {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-left: 2px solid #ccc !important;
+    border-bottom: 2px solid #ccc !important;
+
+    transition: border .2s;
+  }
+
+  .slider-icon-left {
+    transform: rotate( 45deg);
+  }
+
+  .slider-icon-right {
+    transform: rotate( -135deg);
+  }
+
+  .btn:hover .slider-icon {
+    border-color: rgba(255, 255, 255, 1);
+  }
+
   .indicators {
     position: absolute;
-    bottom: 20px;
+    bottom: -30px;
     z-index: 999;
   }
 
@@ -202,9 +267,9 @@
 
   .slider-indicator-icon {
     display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin: 0 .1rem;
+    width: 7px;
+    height: 7px;
+    margin: 0 .2rem;
 
     cursor: pointer;
     border-radius: 50%;
@@ -212,6 +277,6 @@
   }
 
   .slider-indicator-active {
-    background-color: rgba( 255, 255, 255, .2);
+    background-color: black;
   }
 </style>
